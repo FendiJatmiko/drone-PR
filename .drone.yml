@@ -7,10 +7,10 @@ pipeline:
       - npm -v
       - yarn --version
       - yarn config set cache-folder .yarn-cache
-      - yarn install
+      - yarn install --silent
       - yarn run production
     when:
-      event: [ pull_request, push ]
+      event: [ pull_request ]
       branch: master
   backend:
     image: laradock/workspace:1.8-71
@@ -19,11 +19,11 @@ pipeline:
       - php -v
       - composer -V
       - cp .env.example .env
-      - composer install --prefer-dist
+      - composer install -q --prefer-dist
       - php artisan key:generate
       - php artisan migrate
       - ./vendor/bin/phpunit
     when:
-      event: [ pull_request, push ]
+      event: [ pull_request ]
       branch: master
 
