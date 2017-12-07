@@ -1,0 +1,29 @@
+pipeline:
+  frontend:
+    image: node:8.1.2
+    group: laravel
+    commands:
+      - node -v
+      - npm -v
+      - yarn --version
+      - yarn config set cache-folder .yarn-cache
+      - yarn install
+      - yarn run production
+    when:
+      event: [ pull_request, push ]
+      branch: master
+  backend:
+    image: laradock/workspace:1.8-71
+    group: laravel
+    commands:
+      - php -v
+      - composer -V
+      - cp .env.example .env
+      - composer install --prefer-dist
+      - php artisan key:generate
+      - php artisan migrate
+      - ./vendor/bin/phpunit
+    when:
+      event: [ pull_request, push ]
+      branch: master
+
